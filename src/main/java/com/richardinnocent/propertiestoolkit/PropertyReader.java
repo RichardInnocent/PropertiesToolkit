@@ -3,6 +3,7 @@ package com.richardinnocent.propertiestoolkit;
 import java.util.Properties;
 import java.util.function.Function;
 
+@SuppressWarnings("WeakerAccess")
 public class PropertyReader {
 
   private static final Function<String, Byte> BYTE_PARSER = Byte::valueOf;
