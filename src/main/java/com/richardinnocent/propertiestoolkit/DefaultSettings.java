@@ -34,7 +34,7 @@ public class DefaultSettings<T> {
                               new ReturnBehaviour(setting.getTask(), setting.getReturnValue())));
   }
 
-  private class Setting {
+  public class Setting {
 
     private Set<DefaultCondition> conditions = new HashSet<>(1);
     private BiConsumer<String, String> task;
@@ -61,11 +61,12 @@ public class DefaultSettings<T> {
       return returnValue;
     }
 
-    public void thenDo(BiConsumer<String, String> task) {
+    public Setting thenDo(BiConsumer<String, String> task) {
       this.task = task;
+      return this;
     }
 
-    public DefaultSettings thenReturn(T returnValue) {
+    public DefaultSettings<T> thenReturn(T returnValue) {
       this.returnValue = returnValue;
       DefaultSettings.this.saveBehaviourMap(this);
       return DefaultSettings.this;
