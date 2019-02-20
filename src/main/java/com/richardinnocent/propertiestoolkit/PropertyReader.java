@@ -12,6 +12,7 @@ public class PropertyReader {
   private static final Function<String, Float> FLOAT_PARSER = Float::valueOf;
   private static final Function<String, Double> DOUBLE_PARSER = Double::valueOf;
   private static final Function<String, Boolean> BOOLEAN_PARSER = Boolean::valueOf;
+  private static final Function<String, String> STRING_PARSER = value -> value;
 
   private final Properties properties;
 
@@ -19,36 +20,40 @@ public class PropertyReader {
     this.properties = properties;
   }
 
-  public <T> Property getCustom(String key, Function<String, T> parser) {
-    return new Property(key, properties.getProperty(key), parser);
+  public Property<Byte> getByte(String key) {
+    return new Property<>(key, properties.getProperty(key), BYTE_PARSER);
   }
 
-  public Property getByte(String key) {
-    return new Property(key, properties.getProperty(key), BYTE_PARSER);
+  public Property<Short> getShort(String key) {
+    return new Property<>(key, properties.getProperty(key), SHORT_PARSER);
   }
 
-  public Property getShort(String key) {
-    return new Property(key, properties.getProperty(key), SHORT_PARSER);
+  public Property<Integer> getInt(String key) {
+    return new Property<>(key, properties.getProperty(key), INT_PARSER);
   }
 
-  public Property getInt(String key) {
-    return new Property(key, properties.getProperty(key), INT_PARSER);
+  public Property<Long> getLong(String key) {
+    return new Property<>(key, properties.getProperty(key), LONG_PARSER);
   }
 
-  public Property getLong(String key) {
-    return new Property(key, properties.getProperty(key), LONG_PARSER);
+  public Property<Float> getFloat(String key) {
+    return new Property<>(key, properties.getProperty(key), FLOAT_PARSER);
   }
 
-  public Property getFloat(String key) {
-    return new Property(key, properties.getProperty(key), FLOAT_PARSER);
+  public Property<Double> getDouble(String key) {
+    return new Property<>(key, properties.getProperty(key), DOUBLE_PARSER);
   }
 
-  public Property getDouble(String key) {
-    return new Property(key, properties.getProperty(key), DOUBLE_PARSER);
+  public Property<Boolean> getBoolean(String key) {
+    return new Property<>(key, properties.getProperty(key), BOOLEAN_PARSER);
   }
 
-  public Property getBoolean(String key) {
-    return new Property(key, properties.getProperty(key), BOOLEAN_PARSER);
+  public Property<String> getString(String key) {
+    return new Property<>(key, properties.getProperty(key), STRING_PARSER);
+  }
+
+  public <T> Property<T> getCustom(String key, Function<String, T> parser) {
+    return new Property<>(key, properties.getProperty(key), parser);
   }
 
 }
