@@ -15,29 +15,33 @@ public class Property<T> {
   private DefaultSettings<T> defaultSettings;
   private List<Predicate<T>> validations = new LinkedList<>();
 
-  protected Property(String key, String value, Function<String, T> parser) {
+  Property(String key, String value, Function<String, T> parser) {
     this.key = key;
     this.value = value;
     this.parser = parser;
   }
 
-  public Property withDefaultSettings(DefaultSettings<T> defaultSettings) {
+  @SuppressWarnings("WeakerAccess")
+  public Property<T> withDefaultSettings(DefaultSettings<T> defaultSettings) {
     this.defaultSettings = defaultSettings;
     return this;
   }
 
-  public Property withValidation(Predicate<T> validation) {
+  @SuppressWarnings("WeakerAccess")
+  public Property<T> addValidation(Predicate<T> validation) {
     if (validation != null)
       this.validations.add(validation);
     return this;
   }
 
-  public Property withValidations(Predicate<T>... validations) {
+  @SuppressWarnings("WeakerAccess")
+  public Property<T> withValidations(Predicate<T>... validations) {
     return withValidations(Arrays.asList(validations));
   }
 
-  public Property withValidations(Collection<Predicate<T>> validations) {
-    validations.forEach(this::withValidation);
+  @SuppressWarnings("WeakerAccess")
+  public Property<T> withValidations(Collection<Predicate<T>> validations) {
+    validations.forEach(this::addValidation);
     return this;
   }
 
