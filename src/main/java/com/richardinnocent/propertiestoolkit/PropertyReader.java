@@ -1,0 +1,54 @@
+package com.richardinnocent.propertiestoolkit;
+
+import java.util.Properties;
+import java.util.function.Function;
+
+public class PropertyReader {
+
+  private static final Function<String, Byte> BYTE_PARSER = Byte::valueOf;
+  private static final Function<String, Short> SHORT_PARSER = Short::valueOf;
+  private static final Function<String, Integer> INT_PARSER = Integer::valueOf;
+  private static final Function<String, Long> LONG_PARSER = Long::valueOf;
+  private static final Function<String, Float> FLOAT_PARSER = Float::valueOf;
+  private static final Function<String, Double> DOUBLE_PARSER = Double::valueOf;
+  private static final Function<String, Boolean> BOOLEAN_PARSER = Boolean::valueOf;
+
+  private final Properties properties;
+
+  public PropertyReader(Properties properties) {
+    this.properties = properties;
+  }
+
+  public <T> Property getCustom(String key, Function<String, T> parser) {
+    return new Property(key, properties.getProperty(key), parser);
+  }
+
+  public Property getByte(String key) {
+    return new Property(key, properties.getProperty(key), BYTE_PARSER);
+  }
+
+  public Property getShort(String key) {
+    return new Property(key, properties.getProperty(key), SHORT_PARSER);
+  }
+
+  public Property getInt(String key) {
+    return new Property(key, properties.getProperty(key), INT_PARSER);
+  }
+
+  public Property getLong(String key) {
+    return new Property(key, properties.getProperty(key), LONG_PARSER);
+  }
+
+  public Property getFloat(String key) {
+    return new Property(key, properties.getProperty(key), FLOAT_PARSER);
+  }
+
+  public Property getDouble(String key) {
+    return new Property(key, properties.getProperty(key), DOUBLE_PARSER);
+  }
+
+  public Property getBoolean(String key) {
+    return new Property(key, properties.getProperty(key), BOOLEAN_PARSER);
+  }
+
+}
