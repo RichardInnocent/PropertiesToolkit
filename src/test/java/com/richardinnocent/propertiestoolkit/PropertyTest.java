@@ -7,6 +7,9 @@ import org.junit.Test;
 import static com.richardinnocent.propertiestoolkit.DefaultCondition.*;
 import static org.junit.Assert.*;
 
+/**
+ * @author RichardInnocent
+ */
 @SuppressWarnings("unchecked")
 public class PropertyTest {
 
