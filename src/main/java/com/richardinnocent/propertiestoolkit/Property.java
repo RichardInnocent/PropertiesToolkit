@@ -6,8 +6,13 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * Stores and processes the returned value from the {@code Properties} file.
+ * Stores and processes the returned value from the {@code Properties} file. To get the value in
+ * the appropriate, the {@link Property#get()} method should be called, which makes a converts
+ * and validates the specified value, and throwing meaningful exceptions or returning appropriate
+ * default values where necessary.
  * @param <T> The type that the property should be converted to.
+ * @see Property#get()
+ * @author RichardInnocent
  */
 public class Property<T> {
 
