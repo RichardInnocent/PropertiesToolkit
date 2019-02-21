@@ -2,6 +2,7 @@ package com.richardinnocent.propertiestoolkit;
 
 /**
  * The parent class for all exceptions that can be thrown while calling {@link Property#get()}.
+ * @since 1.0.0
  * @author RichardInnocent
  */
 @SuppressWarnings("WeakerAccess")

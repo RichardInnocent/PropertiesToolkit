@@ -12,6 +12,7 @@ import java.util.stream.Stream;
  * The default settings express the default return value and optional behaviour that should be
  * applied when encountering specified {@link DefaultCondition}s.
  * @param <T> The type for the return value.
+ * @since 1.0.0
  * @author RichardInnocent
  */
 @SuppressWarnings("WeakerAccess")

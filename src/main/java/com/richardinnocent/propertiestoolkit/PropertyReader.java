@@ -59,6 +59,8 @@ import java.util.function.Function;
  *         .get(); // 0
  * </pre>
  * See {@link DefaultCondition} for a full set of conditions.
+ * @since 1.0.0
+ * @author RichardInnocent
  */
 @SuppressWarnings("WeakerAccess")
 public class PropertyReader {

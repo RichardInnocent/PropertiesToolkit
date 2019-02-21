@@ -3,6 +3,7 @@ package com.richardinnocent.propertiestoolkit;
 /**
  * Implies when a default value/behaviour should be applied during the {@link Property#get()}
  * method.
+ * @since 1.0.0
  * @author RichardInnocent
  */
 public enum DefaultCondition {

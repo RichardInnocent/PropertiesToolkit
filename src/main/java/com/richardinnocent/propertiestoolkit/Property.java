@@ -12,6 +12,7 @@ import java.util.function.Predicate;
  * default values where necessary.
  * @param <T> The type that the property should be converted to.
  * @see Property#get()
+ * @since 1.0.0
  * @author RichardInnocent
  */
 public class Property<T> {

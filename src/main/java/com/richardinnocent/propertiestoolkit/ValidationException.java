@@ -5,6 +5,7 @@ package com.richardinnocent.propertiestoolkit;
  * fail. This exception can be suppressed by providing the {@code Property} with some {@link
  * DefaultSettings} that specify what value should be returned when a {@link
  * DefaultCondition#IS_INVALID} condition is encountered.
+ * @since 1.0.0
  * @author RichardInnocent
  */
 @SuppressWarnings("WeakerAccess")

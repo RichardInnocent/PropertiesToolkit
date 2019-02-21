@@ -6,6 +6,7 @@ package com.richardinnocent.propertiestoolkit;
  * correct type. This exception can be suppressed by providing the {@code Property} with some
  * {@link DefaultSettings} that specify what value should be returned when a {@link
  * DefaultCondition#PARSE_FAILS} condition is encountered.
+ * @since 1.0.0
  * @author RichardInnocent
  */
 @SuppressWarnings("WeakerAccess")
