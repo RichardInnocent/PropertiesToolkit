@@ -106,7 +106,6 @@ public class PropertyReaderTest {
     properties.put(key, value);
     StringBuilder returned = reader.getCustom(key, StringBuilder::new).get();
     assertEquals(value, returned.toString());
-
   }
 
 }
