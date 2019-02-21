@@ -3,7 +3,7 @@ package com.richardinnocent.propertiestoolkit;
 /**
  * This exception is thrown when calling {@link Property#get()}, and the provided {@link
  * java.util.function.Function} cannot parse the text from the {@code Properties} file to the
- * correct type. This exception can be suppressed by providing that {@code Property} with some
+ * correct type. This exception can be suppressed by providing the {@code Property} with some
  * {@link DefaultSettings} that specify what value should be returned when a {@link
  * DefaultCondition#PARSE_FAILS} condition is encountered.
  * @author RichardInnocent
