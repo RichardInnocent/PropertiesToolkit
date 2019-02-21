@@ -60,7 +60,7 @@ public class PropertyTest {
   @Test(expected = ValidationException.class)
   public void testInvalidValueWithNoDefault() {
     new Property<>(KEY, INT_TEXT, INT_PARSER)
-        .addValidation(value -> value < INT)
+        .addConstraint(value -> value < INT)
         .get();
   }
 
@@ -76,7 +76,7 @@ public class PropertyTest {
   }
 
   @Test
-  public void testSingleValidation() {
+  public void testSingleConstraint() {
     DefaultSettings<Integer> settings = new DefaultSettings<Integer>()
         .when(IS_INVALID)
         .thenReturn(0);
@@ -84,26 +84,26 @@ public class PropertyTest {
     // Valid
     assertEquals(INT,
                  new Property<>(KEY, INT_TEXT, INT_PARSER)
-                     .addValidation(value -> value > 0)
+                     .addConstraint(value -> value > 0)
                      .get());
 
     // Invalid
     assertEquals(Integer.valueOf(0),
                  new Property<>(KEY, INT_TEXT, INT_PARSER)
-                     .addValidation(value -> value < 40)
+                     .addConstraint(value -> value < 40)
                      .withDefaultSettings(settings)
                      .get());
   }
 
   @Test
-  public void testSingleNullValidation() {
+  public void testSingleNullConstraint() {
     assertEquals(INT, new Property<>(KEY, INT_TEXT, INT_PARSER)
-        .addValidation(null)
+        .addConstraint(null)
         .get());
   }
 
   @Test
-  public void testMultipleValidations() {
+  public void testMultipleConstraints() {
     DefaultSettings<Integer> settings = new DefaultSettings<Integer>()
         .when(IS_INVALID)
         .thenReturn(0);
@@ -111,31 +111,31 @@ public class PropertyTest {
     // Valid
     assertEquals(INT,
                  new Property<>(KEY, INT_TEXT, INT_PARSER)
-                     .addValidation(null)
-                     .addValidation(value -> value > 0)
-                     .addValidation(value -> value < 50)
+                     .addConstraint(null)
+                     .addConstraint(value -> value > 0)
+                     .addConstraint(value -> value < 50)
                      .get());
 
     assertEquals(Integer.valueOf(0),
                  new Property<>(KEY, INT_TEXT, INT_PARSER)
                      .withDefaultSettings(settings)
-                     .addValidation(null)
-                     .addValidation(value -> value > 0)
-                     .addValidation(value -> value < 40)
+                     .addConstraint(null)
+                     .addConstraint(value -> value > 0)
+                     .addConstraint(value -> value < 40)
                      .get());
   }
 
   @Test(expected = ValidationException.class)
-  public void testExceptionThrownFromValidationNoDefaultThrowsException() {
+  public void testExceptionThrownFromConstraintNoDefaultThrowsException() {
     new Property<>(KEY, INT_TEXT, INT_PARSER)
-        .addValidation(value -> {
+        .addConstraint(value -> {
           throw new RuntimeException();
         })
         .get();
   }
 
   @Test
-  public void testExceptionThrownFromValidationCaughtByDefaultWhenSet() {
+  public void testExceptionThrownFromConstraintCaughtByDefaultWhenSet() {
     DefaultSettings<Integer> settings = new DefaultSettings<Integer>()
         .when(IS_INVALID)
         .thenReturn(0);
@@ -143,7 +143,7 @@ public class PropertyTest {
     assertEquals(Integer.valueOf(0),
                  new Property<>(KEY, INT_TEXT, INT_PARSER)
                      .withDefaultSettings(settings)
-                     .addValidation(value -> {
+                     .addConstraint(value -> {
                        throw new RuntimeException();
                      })
                      .get());

@@ -20,7 +20,7 @@ public class Property<T> {
   private final String key;
   private final Function<String, T> parser;
   private DefaultSettings<T> defaultSettings;
-  private List<Predicate<T>> validations = new LinkedList<>();
+  private List<Predicate<T>> constraints = new LinkedList<>();
 
   /**
    * Creates a {@code Property} for the given key and value.
@@ -58,14 +58,14 @@ public class Property<T> {
    * method</b>, a {@link ValidationException} will be thrown from the {@link Property#get()}
    * method, unless a {@link DefaultSettings} object has been applied to this property which
    * specifies what to return in this scenario ({@link DefaultCondition#IS_INVALID}).
-   * @param validation The validation check that should be implemented. Note that the {@code <T>}
-   *  object that is passed to the predicate will never be {@code null}.
+   * @param constraint The constraint that should be applied. Note that the {@code <T>} object that
+   *   is passed to the predicate will never be {@code null}.
    * @return This {@code Property} object, for chaining.
    */
   @SuppressWarnings("WeakerAccess")
-  public Property<T> addValidation(Predicate<T> validation) {
-    if (validation != null)
-      this.validations.add(validation);
+  public Property<T> addConstraint(Predicate<T> constraint) {
+    if (constraint != null)
+      this.constraints.add(constraint);
     return this;
   }
 
@@ -87,9 +87,9 @@ public class Property<T> {
    *     object has been applied which contains the appropriate behaviour for {@link
    *     DefaultCondition#PARSE_FAILS}. If a setting is found, process as specified in the setting.
    *     If no such setting is found, an {@link InvalidTypeException} is thrown.</li>
-   *   <li><b>Apply all validation checks</b><br>
-   *     <b>If all validation checks pass</b>, return the processed value.<br>
-   *     <b>If any validation checks fail</b>, check if a {@code defaultSettings} object has been
+   *   <li><b>Apply all constraint checks</b><br>
+   *     <b>If all constraint checks pass</b>, return the processed value.<br>
+   *     <b>If any constraint checks fail</b>, check if a {@code defaultSettings} object has been
    *     applied which contains the appropriate behaviour for {@link DefaultCondition#IS_INVALID}.
    *     If a setting is found, process as specified in the setting. If no such setting is found, a
    *     {@link ValidationException} is thrown.</li>
@@ -102,7 +102,7 @@ public class Property<T> {
    * @throws InvalidTypeException Thrown if the property text cannot be converted to the correct
    *   type, and there is no {@code defaultSetting} specifying behaviour for {@link
    *    DefaultCondition#PARSE_FAILS}.
-   * @throws ValidationException Thrown if any of the validation checks for this property fail,
+   * @throws ValidationException Thrown if any of the constraint checks for this property fail,
    *   and there is no {@code defaultSetting} specifying behaviour for {@link
    *   DefaultCondition#IS_INVALID}.
    */
@@ -118,9 +118,9 @@ public class Property<T> {
       return applyDefaultBehaviour(DefaultCondition.PARSE_FAILS, e);
     }
 
-    for (Predicate<T> validation : validations) {
+    for (Predicate<T> constraint : constraints) {
       try {
-        if (!validation.test(parsedValue))
+        if (!constraint.test(parsedValue))
           return applyDefaultBehaviour(DefaultCondition.IS_INVALID,
                                        ValidationException.forProperty(key, value));
       } catch (RuntimeException e) {

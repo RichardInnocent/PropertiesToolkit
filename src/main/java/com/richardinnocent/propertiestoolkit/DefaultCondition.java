@@ -18,8 +18,8 @@ public enum DefaultCondition {
   IS_EMPTY,
   /**
    * This applies when the text from the {@code Properties} file is successfully parsed, but fails
-   * any of the validation criteria.
-   * @see Property#addValidation(java.util.function.Predicate)
+   * any of the constraint criteria.
+   * @see Property#addConstraint(java.util.function.Predicate)
    */
   IS_INVALID
 }
