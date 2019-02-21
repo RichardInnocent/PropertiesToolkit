@@ -1,7 +1,6 @@
 package com.richardinnocent.propertiestoolkit;
 
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import org.junit.Test;
 
@@ -82,13 +81,13 @@ public class PropertyTest {
     // Valid
     assertEquals(INT,
                  new Property<>(KEY, INT_TEXT, INT_PARSER)
-                     .withValidations(value -> value > 0)
+                     .addValidation(value -> value > 0)
                      .get());
 
     // Invalid
     assertEquals(Integer.valueOf(0),
                  new Property<>(KEY, INT_TEXT, INT_PARSER)
-                     .withValidations(value -> value < 40)
+                     .addValidation(value -> value < 40)
                      .withDefaultSettings(settings)
                      .get());
   }
@@ -96,7 +95,7 @@ public class PropertyTest {
   @Test
   public void testSingleNullValidation() {
     assertEquals(INT, new Property<>(KEY, INT_TEXT, INT_PARSER)
-        .withValidations((Predicate<Integer>) null)
+        .addValidation(null)
         .get());
   }
 
@@ -109,19 +108,41 @@ public class PropertyTest {
     // Valid
     assertEquals(INT,
                  new Property<>(KEY, INT_TEXT, INT_PARSER)
-                     .withValidations(null,
-                                      value -> value > 0,
-                                      value -> value < 50,
-                                      null)
+                     .addValidation(null)
+                     .addValidation(value -> value > 0)
+                     .addValidation(value -> value < 50)
                      .get());
 
     assertEquals(Integer.valueOf(0),
                  new Property<>(KEY, INT_TEXT, INT_PARSER)
                      .withDefaultSettings(settings)
-                     .withValidations(null,
-                                      value -> value > 0,
-                                      value -> value < 40,
-                                      null)
+                     .addValidation(null)
+                     .addValidation(value -> value > 0)
+                     .addValidation(value -> value < 40)
+                     .get());
+  }
+
+  @Test(expected = ValidationException.class)
+  public void testExceptionThrownFromValidationNoDefaultThrowsException() {
+    new Property<>(KEY, INT_TEXT, INT_PARSER)
+        .addValidation(value -> {
+          throw new RuntimeException();
+        })
+        .get();
+  }
+
+  @Test
+  public void testExceptionThrownFromValidationCaughtByDefaultWhenSet() {
+    DefaultSettings<Integer> settings = new DefaultSettings<Integer>()
+        .when(IS_INVALID)
+        .thenReturn(0);
+
+    assertEquals(Integer.valueOf(0),
+                 new Property<>(KEY, INT_TEXT, INT_PARSER)
+                     .withDefaultSettings(settings)
+                     .addValidation(value -> {
+                       throw new RuntimeException();
+                     })
                      .get());
   }
 

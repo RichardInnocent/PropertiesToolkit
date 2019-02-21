@@ -1,12 +1,14 @@
 package com.richardinnocent.propertiestoolkit;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+/**
+ * Stores and processes the returned value from the {@code Properties} file.
+ * @param <T> The type that the property should be converted to.
+ */
 public class Property<T> {
 
   private final String value;
@@ -15,18 +17,46 @@ public class Property<T> {
   private DefaultSettings<T> defaultSettings;
   private List<Predicate<T>> validations = new LinkedList<>();
 
+  /**
+   * Creates a {@code Property} for the given key and value.
+   * @param key The key name from the {@code Properties} file.
+   * @param value The value for the given key.
+   * @param parser The method of converting the raw {@code value} text from the {@code Properties}
+   *   file, to the desired type.
+   */
   Property(String key, String value, Function<String, T> parser) {
     this.key = key;
     this.value = value;
     this.parser = parser;
   }
 
+  /**
+   * Sets the default settings for this property. The default settings specify what should be
+   * returned (and executed, if appropriate), if specific {@link DefaultCondition}s are encountered
+   * during processing. If no default is set for that specific condition, a {@code
+   * PropertiesException} will be thrown when calling {@link Property#get()}.
+   * @param defaultSettings The default settings.
+   * @return This {@code Property} object, for chaining.
+   */
   @SuppressWarnings("WeakerAccess")
   public Property<T> withDefaultSettings(DefaultSettings<T> defaultSettings) {
     this.defaultSettings = defaultSettings;
     return this;
   }
 
+  /**
+   * Enforces that the returned object meets the given constraints. Repeated calls to this method
+   * will add additional validation checks, not replacing the previously added checks.<br>
+   * <br>
+   * <b>When all validation checks pass</b>, the desired object will be returned as normal.<br>
+   * <b>When any validations checks fail or a {@code RuntimeException} is thrown from the
+   * method</b>, a {@link ValidationException} will be thrown from the {@link Property#get()}
+   * method, unless a {@link DefaultSettings} object has been applied to this property which
+   * specifies what to return in this scenario ({@link DefaultCondition#IS_INVALID}).
+   * @param validation The validation check that should be implemented. Note that the {@code <T>}
+   *  object that is passed to the predicate will never be {@code null}.
+   * @return This {@code Property} object, for chaining.
+   */
   @SuppressWarnings("WeakerAccess")
   public Property<T> addValidation(Predicate<T> validation) {
     if (validation != null)
@@ -34,18 +64,44 @@ public class Property<T> {
     return this;
   }
 
-  @SuppressWarnings("WeakerAccess")
-  public Property<T> withValidations(Predicate<T>... validations) {
-    return withValidations(Arrays.asList(validations));
-  }
-
-  @SuppressWarnings("WeakerAccess")
-  public Property<T> withValidations(Collection<Predicate<T>> validations) {
-    validations.forEach(this::addValidation);
-    return this;
-  }
-
-  public T get() throws PropertiesException {
+  /**
+   * Converts the {@code Property} to the expected type, {@code <T>}. This processes in the
+   * following manner:
+   * <ol>
+   *   <li><b>Check if {@code null} or empty</b>:<br>
+   *     <b>Property is not {@code null} or empty</b>: Continue to step 2.<br>
+   *     <b>Property is {@code null} or empty</b>: Do not attempt to parse this property. Check if
+   *     a {@code defaultSettings} object has been applied which contains the appropriate behaviour
+   *     for {@link DefaultCondition#IS_EMPTY}. If a setting is found, process as specified in the
+   *     setting. If no such setting is found, a {@link MissingPropertyException} is
+   *     thrown.</b></li>
+   *   <li><b>Attempt to parse the property to the expected type</b><br>
+   *     This parse is completed using the provided {@code Function<String, T>}.<br>
+   *     <b>If the property is parsed successfully</b>, continue to step 3.<br>
+   *     <b>If the property is not parsed successfully</b>, check if a {@code defaultSettings}
+   *     object has been applied which contains the appropriate behaviour for {@link
+   *     DefaultCondition#PARSE_FAILS}. If a setting is found, process as specified in the setting.
+   *     If no such setting is found, an {@link InvalidTypeException} is thrown.</li>
+   *   <li><b>Apply all validation checks</b><br>
+   *     <b>If all validation checks pass</b>, return the processed value.<br>
+   *     <b>If any validation checks fail</b>, check if a {@code defaultSettings} object has been
+   *     applied which contains the appropriate behaviour for {@link DefaultCondition#IS_INVALID}.
+   *     If a setting is found, process as specified in the setting. If no such setting is found, a
+   *     {@link ValidationException} is thrown.</li>
+   * </ol>
+   * @return The property, converted to the required type, or an appropriate default if there is a
+   *   return value specified for the triggered {@link DefaultCondition}.
+   * @throws MissingPropertyException Thrown if the property text is {@code null} or empty, and
+   *   there is no {@code defaultSetting} specifying behaviour for {@link
+   *   DefaultCondition#IS_EMPTY}.
+   * @throws InvalidTypeException Thrown if the property text cannot be converted to the correct
+   *   type, and there is no {@code defaultSetting} specifying behaviour for {@link
+   *    DefaultCondition#PARSE_FAILS}.
+   * @throws ValidationException Thrown if any of the validation checks for this property fail,
+   *   and there is no {@code defaultSetting} specifying behaviour for {@link
+   *   DefaultCondition#IS_INVALID}.
+   */
+  public T get() throws MissingPropertyException, InvalidTypeException, ValidationException {
     if (value == null || value.isEmpty())
       return applyDefaultBehaviour(DefaultCondition.IS_EMPTY,
                                    MissingPropertyException.forProperty(key));
@@ -58,9 +114,14 @@ public class Property<T> {
     }
 
     for (Predicate<T> validation : validations) {
-      if (!validation.test(parsedValue))
+      try {
+        if (!validation.test(parsedValue))
+          return applyDefaultBehaviour(DefaultCondition.IS_INVALID,
+                                       ValidationException.forProperty(key, value));
+      } catch (RuntimeException e) {
         return applyDefaultBehaviour(DefaultCondition.IS_INVALID,
-                                     ValidationException.forProperty(key, value));
+                                     ValidationException.forProperty(key, value, e));
+      }
     }
 
     return parsedValue;

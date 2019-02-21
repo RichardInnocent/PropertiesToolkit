@@ -13,8 +13,14 @@ public class ValidationExceptionTest {
   public void testForProperty() {
     String key = "key";
     String value = "value";
-    ValidationException e = ValidationException.forProperty(key, value);
-    assertEquals("Key, " + key + ", contains an invalid value, " + value, e.getMessage());
+    String expectedMessage = "Key, " + key + ", contains an invalid value, " + value;
+    ValidationException ve1 = ValidationException.forProperty(key, value);
+    assertEquals(expectedMessage, ve1.getMessage());
+
+    RuntimeException e = new RuntimeException("test exception");
+    ValidationException ve2 = ValidationException.forProperty(key, value, e);
+    assertEquals(expectedMessage, ve2.getMessage());
+    assertEquals(e, ve2.getCause());
   }
 
 }
