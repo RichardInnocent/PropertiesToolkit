@@ -3,6 +3,7 @@ package com.richardinnocent.propertiestoolkit;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Stream;
@@ -13,6 +14,7 @@ import java.util.stream.Stream;
  * @param <T> The type for the return value.
  * @author RichardInnocent
  */
+@SuppressWarnings("WeakerAccess")
 public class DefaultSettings<T> {
 
   private final Map<DefaultCondition, ReturnBehaviour> behaviourMap = new HashMap<>(1);
@@ -48,7 +50,7 @@ public class DefaultSettings<T> {
    * {@code Setting} that was applied will dictate the behaviour if this condition is met.
    * @param conditions The conditions for which the soon-to-be-specified task (if appropriate) and
    *   return value should be applied.
-   * @return
+   * @return The new {@code Setting}s object, for chaining.
    */
   public Setting when(DefaultCondition... conditions) {
     return new Setting(conditions);
@@ -100,7 +102,7 @@ public class DefaultSettings<T> {
         throw new IllegalArgumentException("Conditions cannot be null or empty");
 
       Stream.of(conditions)
-            .filter(condition -> condition != null)
+            .filter(Objects::nonNull)
             .forEach(this.conditions::add);
     }
 
