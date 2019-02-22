@@ -149,4 +149,12 @@ public class PropertyTest {
                      .get());
   }
 
+  @Test
+  public void testToString() {
+    assertEquals(KEY + ": " + INT_TEXT,
+                 new Property<>(KEY, INT_TEXT, INT_PARSER).toString());
+    assertEquals(KEY + ": null",
+                 new Property<>(KEY, null, INT_PARSER).toString());
+  }
+
 }
