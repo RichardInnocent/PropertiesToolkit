@@ -1,4 +1,4 @@
-package com.richardinnocent.propertiestoolkit;
+package org.richardinnocent.propertiestoolkit;
 
 import org.junit.Test;
 

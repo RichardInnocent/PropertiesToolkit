@@ -1,4 +1,4 @@
-package com.richardinnocent.propertiestoolkit;
+package org.richardinnocent.propertiestoolkit;
 
 /**
  * Implies when a default value/behaviour should be applied during the {@link Property#get()}

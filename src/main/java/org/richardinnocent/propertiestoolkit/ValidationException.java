@@ -1,4 +1,4 @@
-package com.richardinnocent.propertiestoolkit;
+package org.richardinnocent.propertiestoolkit;
 
 /**
  * This exception is thrown when calling {@link Property#get()}, and any of the constraint checks

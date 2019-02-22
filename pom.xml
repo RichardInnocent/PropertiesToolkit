@@ -4,9 +4,21 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.richardinnocent.propertiestoolkit</groupId>
-  <artifactId>com.richardinnocent.propertiestoolkit</artifactId>
-  <version>1.0.0</version>
+  <groupId>org.richardinnocent.propertiestoolkit</groupId>
+  <artifactId>org.richardinnocent.propertiestoolkit</artifactId>
+  <version>2.0.0</version>
+  <packaging>jar</packaging>
+
+  <name>Properties Toolkit</name>
+  <description>A simple, lightweight utility to validate and parse values from the Java Properties file.</description>
+
+  <licenses>
+    <license>
+      <name>MIT</name>
+      <url>https://opensource.org/licenses/MIT</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -14,14 +26,6 @@
   </properties>
 
   <dependencies>
-
-    <!-- https://mvnrepository.com/artifact/log4j/log4j -->
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.17</version>
-    </dependency>
-
     <!-- https://mvnrepository.com/artifact/junit/junit -->
     <dependency>
       <groupId>junit</groupId>
@@ -29,15 +33,6 @@
       <version>4.12</version>
       <scope>test</scope>
     </dependency>
-
-    <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <version>2.24.5</version>
-      <scope>test</scope>
-    </dependency>
-
   </dependencies>
 
 

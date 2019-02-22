@@ -1,16 +1,14 @@
-package com.richardinnocent.propertiestoolkit;
+package org.richardinnocent.propertiestoolkit;
 
 import java.util.function.Function;
 
 import org.junit.Test;
 
-import static com.richardinnocent.propertiestoolkit.DefaultCondition.*;
 import static org.junit.Assert.*;
 
 /**
  * @author RichardInnocent
  */
-@SuppressWarnings("unchecked")
 public class PropertyTest {
 
   private static final String KEY = "key";
@@ -33,7 +31,7 @@ public class PropertyTest {
   @Test
   public void testEmptyPropertyWithDefault() {
     DefaultSettings<Integer> settings = new DefaultSettings<Integer>()
-        .when(IS_EMPTY)
+        .when(DefaultCondition.IS_EMPTY)
         .thenReturn(INT);
     assertEquals(INT,
                  new Property<>(KEY, null, INT_PARSER)
@@ -49,7 +47,7 @@ public class PropertyTest {
   @Test
   public void testInvalidTypeWithDefault() {
     DefaultSettings<Integer> settings = new DefaultSettings<Integer>()
-        .when(PARSE_FAILS)
+        .when(DefaultCondition.PARSE_FAILS)
         .thenReturn(INT);
     assertEquals(INT,
                  new Property<>(KEY, STRING, INT_PARSER)
@@ -67,7 +65,7 @@ public class PropertyTest {
   @Test
   public void testInvalidValueWithDefault() {
     DefaultSettings<Integer> settings = new DefaultSettings<Integer>()
-        .when(IS_INVALID)
+        .when(DefaultCondition.IS_INVALID)
         .thenReturn(INT);
     assertEquals(INT,
                  new Property<>(KEY, INT_TEXT, INT_PARSER)
@@ -78,7 +76,7 @@ public class PropertyTest {
   @Test
   public void testSingleConstraint() {
     DefaultSettings<Integer> settings = new DefaultSettings<Integer>()
-        .when(IS_INVALID)
+        .when(DefaultCondition.IS_INVALID)
         .thenReturn(0);
 
     // Valid
@@ -105,7 +103,7 @@ public class PropertyTest {
   @Test
   public void testMultipleConstraints() {
     DefaultSettings<Integer> settings = new DefaultSettings<Integer>()
-        .when(IS_INVALID)
+        .when(DefaultCondition.IS_INVALID)
         .thenReturn(0);
 
     // Valid
@@ -137,7 +135,7 @@ public class PropertyTest {
   @Test
   public void testExceptionThrownFromConstraintCaughtByDefaultWhenSet() {
     DefaultSettings<Integer> settings = new DefaultSettings<Integer>()
-        .when(IS_INVALID)
+        .when(DefaultCondition.IS_INVALID)
         .thenReturn(0);
 
     assertEquals(Integer.valueOf(0),
