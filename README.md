@@ -29,7 +29,7 @@ Values stored in a `Properties` file are saved as `String`s. These often need to
 #### Primitive Wrappers
 Conversion methods for all primitive wrapper classes are provided by default from the `PropertyReader` class. For example, to convert the property `"value"` to an `Integer`, we can do the following:
 ```
-Integer value = reader.getInt("maxUsers").get();    // 50
+Integer value = reader.getInt("maxUsers").get();
 ```
 
 #### Custom Conversions
@@ -51,7 +51,7 @@ Integer maxUsers = reader.getInt("maxUsers")
                          .get();
 ```
 
-Mutliple constraints can also be added, as follows:
+Multiple constraints can also be added, as follows:
 ```
 Integer maxUsers = reader.getInt("maxUsers")
                          .addConstraint(users -> users > 0)
