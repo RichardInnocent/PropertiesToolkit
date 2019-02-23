@@ -92,11 +92,11 @@ Integer maxUsers = reader.getInt("maxUsers")
 We can also add a task to complete if these conditions are met. This could be useful if to, for example, log the warnings to a `Logger`:
 ```
 DefaultSettings<Integer> maxUsersDefault =
-new DefaultSettings<Integer>()
-      .when(DefaultConditions.values()) // Any DefaultCondition
-        .thenDo((key, value) ->
-            LOGGER.warn("Key, " + key + ", is invalid: " + value))
-        .thenReturn(50);
+  new DefaultSettings<Integer>()
+        .when(DefaultConditions.values()) // Any DefaultCondition
+          .thenDo((key, value) ->
+              LOGGER.warn("Key, " + key + ", is invalid: " + value))
+          .thenReturn(50);
 ```
 
 Finally, we can express different behaviour and return values dependent on which condition is triggered:
