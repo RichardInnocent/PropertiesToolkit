@@ -77,9 +77,10 @@ You can catch any of these specific exceptions or the parent exception, `Propert
 However, it's usually better to assign some default behaviour when these conditions are met. These can be specified using the `DefaultSettings` object. For example, let's try and get the maximum number of users from the properties file - if this property is not specified, cannot be parsed to an `Integer`, or fails validation, let's set this to a reasonable average of 50.
 
 ```
-DefaultSettings<Integer> maxUsersDefault = new DefaultSettings<Integer>()
-                                                 .when(DefaultConditions.values()) // Any DefaultCondition
-                                                 .thenReturn(50);
+DefaultSettings<Integer> maxUsersDefault =
+    new DefaultSettings<Integer>()
+          .when(DefaultConditions.values()) // Any DefaultCondition
+          .thenReturn(50);
 
 Integer maxUsers = reader.getInt("maxUsers")
                          .withDefaultSettings(maxUsersDefault) // Add the default behaviour
@@ -90,28 +91,30 @@ Integer maxUsers = reader.getInt("maxUsers")
 
 We can also add a task to complete if these conditions are met. This could be useful if to, for example, log the warnings to a `Logger`:
 ```
-DefaultSettings<Integer> maxUsersDefault = new DefaultSettings<Integer>()
-                                                 .when(DefaultConditions.values()) // Any DefaultCondition
-                                                   .thenDo((key, value) ->
-                                                       LOGGER.warn("Key, " + key + ", is invalid: " + value))
-                                                   .thenReturn(50);
+DefaultSettings<Integer> maxUsersDefault =
+new DefaultSettings<Integer>()
+      .when(DefaultConditions.values()) // Any DefaultCondition
+        .thenDo((key, value) ->
+            LOGGER.warn("Key, " + key + ", is invalid: " + value))
+        .thenReturn(50);
 ```
 
 Finally, we can express different behaviour and return values dependent on which condition is triggered:
 ```
-DefaultSettings<Integer> maxUsersDefault = new DefaultSettings<Integer>()
-                                                 .when(DefaultConditions.IS_EMPTY)
-                                                   .thenDo((key, value) ->
-                                                       LOGGER.info("Key, " + key + ", has not been specified"))
-                                                   .thenReturn(50)
-                                                 .when(DefaultCondition.IS_INVALID)
-                                                   .thenDo((key, value) ->
-                                                       LOGGER.info("Key, " + key + ", is invalid: " + value))
-                                                   .thenReturn(20)
-                                                 .when(DefaultCondition.PARSE_FAILS)
-                                                   .thenDo((key, value) ->
-                                                       LOGGER.info("Key, " + key + ", cannot be parsed to an int: " + value))
-                                                   .thenReturn(10);
+DefaultSettings<Integer> maxUsersDefault =
+    new DefaultSettings<Integer>()
+          .when(DefaultConditions.IS_EMPTY)
+            .thenDo((key, value) ->
+                LOGGER.info("Key, " + key + ", has not been specified"))
+            .thenReturn(50)
+          .when(DefaultCondition.IS_INVALID)
+            .thenDo((key, value) ->
+                LOGGER.info("Key, " + key + ", is invalid: " + value))
+            .thenReturn(20)
+          .when(DefaultCondition.PARSE_FAILS)
+            .thenDo((key, value) ->
+                LOGGER.info("Key, " + key + ", cannot be parsed to an int: " + value))
+            .thenReturn(10);
 ```
 
 When a `DefaultCondition` is encountered, the `Property` will search to see if it has any default settings that cover this scenario. If no settings are found, or the settings do not specify how that condition should be handled, the appropriate exception is thrown.
