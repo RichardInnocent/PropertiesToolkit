@@ -13,6 +13,15 @@
   <description>A simple, lightweight utility to validate and parse values from the Java Properties file.</description>
   <url>https://github.com/RichardInnocent/PropertiesToolkit</url>
 
+  <developers>
+    <developer>
+      <name>Richard Innocent</name>
+      <email>richardinnocent@sky.com</email>
+      <organization>Richard Innocent</organization>
+      <organizationUrl>richardinnocent.org</organizationUrl>
+    </developer>
+  </developers>
+
   <licenses>
     <license>
       <name>MIT License</name>
