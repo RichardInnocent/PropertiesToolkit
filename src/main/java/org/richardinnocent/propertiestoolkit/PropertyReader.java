@@ -16,7 +16,7 @@ import java.util.function.Function;
  * <pre>
  *   Integer value = reader.getInt("intKey").get();
  * </pre>
- * It's possible that the value for {@code intKey} is <i>not/i> cannot be parsed to an {@code
+ * It's possible that the value for {@code intKey} is <i>not</i> cannot be parsed to an {@code
  * Integer}. In this case, a {@link InvalidTypeException} will be thrown, unless some {@code
  * DefaultSettings} have been defined for this scenario.
  *
