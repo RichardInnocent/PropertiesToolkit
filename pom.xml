@@ -11,6 +11,7 @@
 
   <name>Properties Toolkit</name>
   <description>A simple, lightweight utility to validate and parse values from the Java Properties file.</description>
+  <url>https://github.com/RichardInnocent/PropertiesToolkit</url>
 
   <licenses>
     <license>
