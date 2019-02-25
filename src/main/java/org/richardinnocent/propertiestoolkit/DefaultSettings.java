@@ -1,4 +1,4 @@
-package com.richardinnocent.propertiestoolkit;
+package org.richardinnocent.propertiestoolkit;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,11 +25,11 @@ public class DefaultSettings<T> {
    * conditions. As a result, it's possible to specify different behaviour for different
    * conditions, e.g.:<br>
    * <pre>
-   * DefaultSettings<Integer> settings = new DefaultSettings<>()
+   * DefaultSettings&lt;Integer&gt; settings = new DefaultSettings&lt;&gt;()
    *   .when(DefaultCondition.IS_EMPTY, DefaultCondition.PARSE_FAILS)
    *     .thenReturn(0)
    *   .when(DefaultCondition.IS_INVALID)
-   *     .thenDo((key, value) ->
+   *     .thenDo((key, value) -&gt;
    *         LOGGER.warn("Value for key, " + key + " is invalid: " + value))
    *     .thenReturn(10);</pre>
    * This behaviour is only applied if the {@link Setting#thenReturn(Object)} method is
@@ -37,14 +37,14 @@ public class DefaultSettings<T> {
    *
    * <pre>
    * // Nothing happens
-   * new DefaultSettings<Integer>().when(DefaultCondition.IS_EMPTY);
+   * new DefaultSettings&lt;Integer&gt;().when(DefaultCondition.IS_EMPTY);
    *
    * // Nothing happens
-   * new DefaultSettings<Integer>().when(DefaultCondition.IS_EMPTY)
-   *                      .thenDo(key, value -> LOGGER.debug(Key + ": " + value));
+   * new DefaultSettings&lt;Integer&gt;().when(DefaultCondition.IS_EMPTY)
+   *                      .thenDo(key, value -&gt; LOGGER.debug(Key + ": " + value));
    *
    * // Successfully added to the settings
-   * new DefaultSettings<Integer>().when(DefaultCondition.IS_EMPTY)
+   * new DefaultSettings&lt;Integer&gt;().when(DefaultCondition.IS_EMPTY)
    *                      .thenReturn(0d);</pre>
    *
    * Note that, if the same {@code DefaultCondition} is specified multiple times, the most recent

@@ -1,4 +1,4 @@
-package com.richardinnocent.propertiestoolkit;
+package org.richardinnocent.propertiestoolkit;
 
 import java.util.Properties;
 import java.util.function.Function;
@@ -16,14 +16,14 @@ import java.util.function.Function;
  * <pre>
  *   Integer value = reader.getInt("intKey").get();
  * </pre>
- * It's possible that the value for {@code intKey} is <i>not/i> cannot be parsed to an {@code
+ * It's possible that the value for {@code intKey} is <i>not</i> cannot be parsed to an {@code
  * Integer}. In this case, a {@link InvalidTypeException} will be thrown, unless some {@code
  * DefaultSettings} have been defined for this scenario.
  *
  * <h3>Imposing constraints</h3>
  * Constraints can be applied to the returned value, to ensure that it meets some criteria.
  * <pre>
- *   Integer value = reader.getInt("intKey").addConstraint(value -> value >= 0)
+ *   Integer value = reader.getInt("intKey").addConstraint(value -&gt; value >= 0)
  *                                          .get();
  * </pre>
  * It has been imposed that {@code value >= 0}. If this constraint fails, a {@code
@@ -53,7 +53,7 @@ import java.util.function.Function;
  *   reader.getInt("intKey").get(); // Throws InvalidTypeException
  *
  *   reader.getInt("intKey")
- *         .withDefaultSettings(new DefaultSettings<Integer>()
+ *         .withDefaultSettings(new DefaultSettings&lt;Integer&gt;()
  *                                 .when(DefaultCondition.PARSE_FAILS)
  *                                 .thenReturn(0))
  *         .get(); // 0

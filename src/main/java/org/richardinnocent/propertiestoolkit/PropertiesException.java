@@ -1,11 +1,10 @@
-package com.richardinnocent.propertiestoolkit;
+package org.richardinnocent.propertiestoolkit;
 
 /**
  * The parent class for all exceptions that can be thrown while calling {@link Property#get()}.
  * @since 1.0.0
  * @author RichardInnocent
  */
-@SuppressWarnings("WeakerAccess")
 public class PropertiesException extends RuntimeException {
 
   /**
