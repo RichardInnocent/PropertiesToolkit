@@ -1,4 +1,4 @@
-# PropertiesToolkit
+# Properties Toolkit
 
 A simple, lightweight utility to validate and parse values from the Java Properties file.
 
