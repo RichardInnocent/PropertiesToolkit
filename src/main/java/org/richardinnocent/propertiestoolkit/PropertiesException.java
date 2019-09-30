@@ -27,7 +27,7 @@ public class PropertiesException extends RuntimeException {
    * @param message The exception message.
    * @param cause The cause of the exception.
    */
-  public PropertiesException(String message, Exception cause) {
+  public PropertiesException(String message, Throwable cause) {
     super(message, cause);
   }
 
@@ -35,7 +35,7 @@ public class PropertiesException extends RuntimeException {
    * Creates a {@code PropertiesException} with the specified cause.
    * @param e The cause of the exception.
    */
-  public PropertiesException(Exception e) {
+  public PropertiesException(Throwable e) {
     super(e);
   }
 
