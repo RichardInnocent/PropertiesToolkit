@@ -21,7 +21,7 @@ public class Property<T> {
   private final String key;
   private final Function<String, T> parser;
   private DefaultSettings<T> defaultSettings;
-  private List<Predicate<T>> constraints = new LinkedList<>();
+  private List<Predicate<? super T>> constraints = new LinkedList<>();
 
   /**
    * Creates a {@code Property} for the given key and value.
@@ -44,7 +44,6 @@ public class Property<T> {
    * @param defaultSettings The default settings.
    * @return This {@code Property} object, for chaining.
    */
-  @SuppressWarnings("WeakerAccess")
   public Property<T> withDefaultSettings(DefaultSettings<T> defaultSettings) {
     this.defaultSettings = defaultSettings;
     return this;
@@ -63,8 +62,7 @@ public class Property<T> {
    *   is passed to the predicate will never be {@code null}.
    * @return This {@code Property} object, for chaining.
    */
-  @SuppressWarnings("WeakerAccess")
-  public Property<T> addConstraint(Predicate<T> constraint) {
+  public Property<T> addConstraint(Predicate<? super T> constraint) {
     if (constraint != null)
       this.constraints.add(constraint);
     return this;
@@ -119,7 +117,7 @@ public class Property<T> {
       return applyDefaultBehaviour(DefaultCondition.PARSE_FAILS, e);
     }
 
-    for (Predicate<T> constraint : constraints) {
+    for (Predicate<? super T> constraint : constraints) {
       try {
         if (!constraint.test(parsedValue))
           return applyDefaultBehaviour(DefaultCondition.IS_INVALID,
