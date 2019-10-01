@@ -5,6 +5,7 @@ import org.richardinnocent.propertiestoolkit.PropertiesException;
 /**
  * An exception of this type implies that the annotations that were applied to a field are not
  * valid, and will need to be modified.
+ * @since 3.0.0
  */
 public class InvalidAnnotationException extends PropertiesException {
 

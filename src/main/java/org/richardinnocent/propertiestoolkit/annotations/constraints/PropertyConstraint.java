@@ -10,6 +10,7 @@ import java.util.function.Predicate;
  * org.richardinnocent.propertiestoolkit.DefaultSettings} on the specified {@link
  * org.richardinnocent.propertiestoolkit.annotations.PropertyExtractor}.
  * @param <T> The constraint type. This should match (or be a parent of) the field type.
+ * @since 3.0.0
  */
 public abstract class PropertyConstraint<T> {
 

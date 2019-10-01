@@ -26,6 +26,7 @@ import org.richardinnocent.propertiestoolkit.annotations.PropertyExtractor;
  * IllegalArgumentException} to be thrown. If no constructor was found, an {@link
  * InvalidAnnotationException} is thrown, implying that the annotation configuration for this field
  * requires attention.
+ * @since 3.0.0
  */
 public class GenericExtractor implements PropertyExtractor<Object> {
 

@@ -4,6 +4,7 @@ import java.util.function.Predicate;
 
 /**
  * Indicates that a value, {@code x}, is only value if {@code x > 0}.
+ * @since 3.0.0
  */
 public class NumberMustBePositive extends NumberConstraint {
 

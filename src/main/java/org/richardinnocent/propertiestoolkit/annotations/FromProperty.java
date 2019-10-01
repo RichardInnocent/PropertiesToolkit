@@ -14,6 +14,7 @@ import org.richardinnocent.propertiestoolkit.annotations.propertyHelpers.Generic
  * @see #extractor()
  * @see #constraints()
  * @see PropertiesBean
+ * @since 3.0.0
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

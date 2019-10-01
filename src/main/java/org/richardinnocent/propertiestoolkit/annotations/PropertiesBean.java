@@ -14,6 +14,7 @@ import org.richardinnocent.propertiestoolkit.annotations.propertyHelpers.Generic
  * Represents an instance where some (or all) of the instance fields are generated from a single
  * properties instance. To use this, a class should extend this class, and mark the fields that
  * should be auto-filled with the appropriate {@link FromProperty} annotation.
+ * @since 3.0.0
  */
 public abstract class PropertiesBean {
 
