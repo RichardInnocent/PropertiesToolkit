@@ -17,6 +17,7 @@ import org.richardinnocent.propertiestoolkit.annotations.PropertyExtractor;
  *   <li>{@code float} (and {@code Float}</li>
  *   <li>{@code double} (and {@code Double}</li>
  *   <li>{@code boolean} (and {@code Boolean}</li>
+ *   <li>{@code char} (and {@code Character})</li>
  *   <li>{@code String}</li>
  * </ul>
  * For all other object types, a public constructor that consume a {@code String} is searched for.
@@ -35,6 +36,7 @@ public class GenericExtractor implements PropertyExtractor<Object> {
   private static final Function<String, Float> FLOAT_PARSER = Float::valueOf;
   private static final Function<String, Double> DOUBLE_PARSER = Double::valueOf;
   private static final Function<String, Boolean> BOOLEAN_PARSER = Boolean::valueOf;
+  private static final Function<String, Character> CHAR_PARSER = value -> value.charAt(0);
   private static final Function<String, String> STRING_PARSER = value -> value;
 
   /**
@@ -57,6 +59,7 @@ public class GenericExtractor implements PropertyExtractor<Object> {
    *   <li>{@code float} (and {@code Float}</li>
    *   <li>{@code double} (and {@code Double}</li>
    *   <li>{@code boolean} (and {@code Boolean}</li>
+   *   <li>{@code char} (and {@code Character})</li>
    *   <li>{@code String}</li>
    * </ul>
    * For all other object types, a public constructor that consume a {@code String} is searched for.
@@ -96,6 +99,8 @@ public class GenericExtractor implements PropertyExtractor<Object> {
       return (Function<String, T>) BOOLEAN_PARSER;
     } else if (type == String.class) {
       return (Function<String, T>) STRING_PARSER;
+    } else if (type == Character.TYPE) {
+      return (Function<String, T>) CHAR_PARSER;
     } else {
       return buildOtherType(type);
     }

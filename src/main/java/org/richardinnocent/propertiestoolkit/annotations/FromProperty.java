@@ -12,6 +12,7 @@ import org.richardinnocent.propertiestoolkit.annotations.propertyHelpers.Generic
  * the value will be set at initialisation, depending on the way in which it is specified.
  * @see #key()
  * @see #extractor()
+ * @see #constraints()
  * @see PropertiesBean
  */
 @Documented
@@ -31,5 +32,13 @@ public @interface FromProperty {
    * @return The extractor that maps a string to the desired object type.
    */
   Class extractor() default GenericExtractor.class;
+
+  /**
+   * The constraints that the parsed value must meet to be valid. Each class used in this method
+   * must extend {@link
+   * org.richardinnocent.propertiestoolkit.annotations.constraints.PropertyConstraint}.
+   * @return The constraints that must be met for the value to be valid.
+   */
+  Class[] constraints() default {};
 
 }

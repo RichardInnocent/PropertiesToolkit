@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 public class FromPropertyTest {
 
   @Test
+  @SuppressWarnings("unused")
   public void testDefaults() throws NoSuchFieldException {
     class Test {
       @FromProperty
@@ -16,6 +17,7 @@ public class FromPropertyTest {
     FromProperty settings = Test.class.getDeclaredField("field").getAnnotation(FromProperty.class);
     assertEquals("", settings.key());
     assertEquals(GenericExtractor.class, settings.extractor());
+    assertEquals(0, settings.constraints().length);
   }
 
 }

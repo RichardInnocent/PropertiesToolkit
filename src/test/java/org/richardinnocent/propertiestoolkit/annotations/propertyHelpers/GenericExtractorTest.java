@@ -121,6 +121,11 @@ public class GenericExtractorTest {
     extract("value", StringConstructorObjectThrowsCheckedException.class);
   }
 
+  @Test
+  public void testThereIsNoDefaultBehaviour() {
+    assertNull(EXTRACTOR.getDefaultSettings());
+  }
+
   private <T> T extract(String value, Class<T> valueType) {
     return (T) EXTRACTOR.getExtractionMethod(valueType).apply(value);
   }
