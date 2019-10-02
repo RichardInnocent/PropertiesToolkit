@@ -6,7 +6,7 @@
 
   <groupId>org.richardinnocent.propertiestoolkit</groupId>
   <artifactId>org.richardinnocent.propertiestoolkit</artifactId>
-  <version>2.0.1</version>
+  <version>3.0.0</version>
   <packaging>jar</packaging>
 
   <name>Properties Toolkit</name>
@@ -16,7 +16,6 @@
   <developers>
     <developer>
       <name>Richard Innocent</name>
-      <email>richardinnocent@sky.com</email>
       <organization>Richard Innocent</organization>
       <organizationUrl>richardinnocent.org</organizationUrl>
     </developer>
@@ -37,6 +36,7 @@
   </scm>
 
   <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <additionalparam>-Xdoclint:none</additionalparam>
@@ -54,7 +54,7 @@
       <plugin>
         <groupId>org.sonatype.plugins</groupId>
         <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.7</version>
+        <version>1.6.8</version>
         <extensions>true</extensions>
         <configuration>
           <serverId>ossrh</serverId>
@@ -66,7 +66,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <version>2.2.1</version>
+        <version>3.1.0</version>
         <executions>
           <execution>
             <id>attach-sources</id>
@@ -80,7 +80,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.9.1</version>
+        <version>3.1.1</version>
         <configuration>
           <source>8</source>
         </configuration>
@@ -97,7 +97,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-gpg-plugin</artifactId>
-        <version>1.5</version>
+        <version>1.6</version>
         <executions>
           <execution>
             <id>sign-artifacts</id>
@@ -119,6 +119,15 @@
       <version>4.12</version>
       <scope>test</scope>
     </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>3.0.0</version>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <distributionManagement>

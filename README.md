@@ -15,106 +15,196 @@ For these examples, we will assume that we have created and populated a `Propert
 
 `admin`: The name of the admin account for our system.
 
-The following line is required to start reading the `properties` file:
+### Annotation-driven parsing
+Annotations can be directly to instance fields. Here's a simple example:
+
+```java
+import java.util.Properties;
+import org.richardinnocent.propertiestoolkit.annotations.FromProperty;
+import org.richardinnocent.propertiestoolkit.annotations.PropertiesBean;
+import org.richardinnocent.propertiestoolkit.annotations.constraints.NumberMustBePositive;
+
+public class MyAppProperties extends PropertiesBean {
+
+  @FromProperty(key = "admin")
+  private String adminAccount;
+ 
+  @FromProperty(constraints = NumberMustBePositive.class)
+  private int maxUsers;
+
+  public MyAppProperties(Properties properties) {
+    super(properties);
+  }
+
+  public static void main(String[] args){
+    Properties properties = new Properties();
+    properties.put("admin", "myAdmin");
+    properties.put("maxUsers", "50");
+    
+    MyAppProperties appProperties = new MyAppProperties(properties);
+    System.out.println(appProperties.adminAccount); // myAdmin
+    System.out.println(appProperties.maxUsers);     // 50
+  }
+  
+}
 ```
-PropertyReader reader = new PropertyReader(properties);
+
+Let's step through a few of the important lines from this example.
+
+```java
+public class MyAppProperties extends PropertiesBean
+```
+Each annotation-driven bean needs to extend the `PropertiesBean` class. This will ensure that all appropriate fields are initialised when a new instance is created.
+
+```java
+@FromProperty(key = "admin")
+private String adminAccount;
+```
+The `FromProperty` annotation is used to specify that the `adminAccount` field is to be set based on the properties file. We have stated the key that should correspond to this value is `admin`.
+
+```java
+@FromProperty(constraints = NumberMustBePositive.class)
+private int maxUsers;
+```
+Again, the `FromProperty` annotation is used on this field. In this case, however, there are a few differences:
+- No key is specified. In this scenario, the name of the field is used.
+- A constraint (`NumberMustBePositive`) is specified. After extracting the property from the `Properties` instance and mapping it to an `int`, this constraint gives confidence that `maxUsers > 0`. If the properties file declared `maxUsers=-12`, an exception would be thrown. There are different ways that these exceptions can be handled, which will be reviewed shortly.
+
+#### Handling custom object types
+The `FromProperty` annotation has an additional field that can be set, `extractor`. By default, a `GenericExtractor` is used. This can handle the build of any primitive or corresponding wrapper. If the field that's being set is none of these types, the field is attempted to be instantiated by using a constructor for that object type that takes a single string.
+
+However, this isn't always appropriate. For example, a custom date format could be used to represent date/time objects. In this case, a custom extractor can be specified, such as the following:
+```java
+import org.richardinnocent.propertiestoolkit.annotations.PropertyExtractor;
+
+public class MyObjectExtractor implements PropertyExtractor<MyObject> {
+
+  @Override
+  public Function<String, MyObject> getExtractionMethod() {
+    return text -> new MyObject(text, 12);
+  }
+
+}
+```
+This extractor class can now be applied to a field.
+```java
+@FromProperty(extractor = MyObjectExtractor.class)
+private MyObject myObject;
 ```
 
-All examples assume this has been completed.
+### Imposing custom constraints
+This library comes equipped with a very small set of out-of-the-box constraints that can be used straight away. However, a lot of the time, these aren't going to be sufficient for our purposes. What if, as well as imposing that `maxUsers > 0`, we want to be sure that `maxUsers < 10_000`. Creating custom constraints is easy:
+```java
+import org.richardinnocent.propertiestoolkit.annotations.constraints.PropertyConstraint;
 
+public class IntegerLessThanTenThousand implements PropertyConstraint {
 
-### Parsing
-Values stored in a `Properties` file are saved as `String`s. These often need to be converted to another object type in order to be useful in our programs.
+  public IntegerLessThanTenThousand() {
+    super(Integer.class);
+  }
 
-#### Primitive Wrappers
-Conversion methods for all primitive wrapper classes are provided by default from the `PropertyReader` class. For example, to convert the property `"value"` to an `Integer`, we can do the following:
+  @Override
+  public Predicate<Integer> getConstraint() {
+    return i -> i < 10_000;
+  }
+
+}
 ```
-Integer value = reader.getInt("maxUsers").get();
-```
 
-#### Custom Conversions
-Conversions can also be completed for custom objects. To do this, you'll need to define the function that will convert the `String` into the desired object type. The following example converts the property `"admin"` into a custom `User` object, using our constructor `User(String name, LocalDate initTime)`:
+We can apply this to our original field, alongside the previous constraint.
+```java
+@FromProperty(constraints = {NumberMustBePositive.class, IntegerLessThanTenThousand.class})
+private int maxUsers;
 ```
-User adminUser =
-  reader.getCustom("admin", name -> new User(name, LocalDate.now()))
-        .get();
+Any number of constraints can be added to a field.
+
+### Handling errors
+There are a few error types we can encounter when processing.
+
+| Case                                                                                                         | Condition name                 | Exception                  |
+| ------------------------------------------------------------------------------------------------------------ |:------------------------------:|:--------------------------:|
+| The property value is `null` or empty                                                                        | `DefaultCondition.IS_EMPTY`    | `MissingPropertyException` |
+| The value cannot be converted to the required object type (e.g. a `RuntimeException` is thrown when mapping) | `DefaultCondition.PARSE_FAILS` | `InvalidTypeException`     |
+| The value fails any of the constraints                                                                       | `DefaultCondition.IS_INVALID`  | `ValidationException`      |
+
+The way that these should be handled are defined within the chosen `PropertyExtractor`. The default behaviour is to throw the exceptions, but we can override this if we want to.
+
+```java
+import org.richardinnocent.propertiestoolkit.annotations.PropertyExtractor;
+
+public class MyObjectExtractor implements PropertyExtractor<MyObject> {
+
+  @Override
+  public Function<String, MyObject> getExtractionMethod() {
+    return text -> new MyObject(text, 12);
+  }
+
+  @Override
+  public DefaultSettings<MyObject> getDefaultSettings() {
+    return new DefaultSettings<MyObject>()
+                 .when(DefaultConditions.values()) // Any DefaultCondition
+                   .thenDo((key, value) ->
+                              System.out.println("Key, " + key + ", is set to a bad value: " + value))
+                   .thenReturn(new MyObject("", 0));
+  }
+
+}
 ```
+In this example, if any errors are thrown while trying to parse any values extracted using `MyObjectExtractor`, an appropriate message is printed to the console, and default object is returned instead.
 
-It may be possible that exceptions are thrown from the conversion process. In this case, it is possible, if desired, to handle these scenarios and return default values. See the Exceptions section.
-
-### Imposing Constraints
-Sometimes, we want to validate that the value we retrieve meet a set of criteria to be considered a valid value. This can be imposed using the `Property::addConstraint` method. You can define whatever checks you deem necessary from here. For example, if we want to enforce that the specified maximum number of users must be > 0, we can do the following:
-
+We can implement different behaviour based on the type that is thrown, if we want to.
+```java
+return new DefaultSettings<MyObject>()
+             .when(DefaultConditions.IS_EMPTY)
+               .thenReturn(new MyObject("", 0))
+             .when(DefaultConditions.PARSE_FAILS)
+               .thenDo((key, value) ->
+                          System.out.println("Key, " + key + " could not be parsed from value: " + value))
+               .thenReturn(new MyObject("", 0));
 ```
-Integer maxUsers = reader.getInt("maxUsers")
-                         .addConstraint(users -> users > 0)
+With these defaults conditions, the following will occur:
+
+| Case                                                      | Result                                                                                |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| The property value is `null` or empty                     | An appropriate default instance is returned.                                          |
+| The value cannot be converted to the required object type | A message is printed to the console, and an appropriate default instance is returned. |
+| The value fails any of the constraints                    | An `ValidationException` is thrown at runtime.                                        |
+
+
+## Parsing without annotations
+It's possible to achieve the same behaviour without using annotations at all. An example is provided below for this.
+
+```java
+import org.richardinnocent.propertiestoolkit.PropertyReader;
+import org.richardinnocent.propertiestoolkit.DefaultSettings;
+
+public class NoAnnotationPropertyReader {
+
+  public void runExample(Properties properties) {
+    PropertyReader reader = new PropertyReader(properties);
+    
+    String adminAccount = reader.getString("admin").get();
+
+    int maxUsers = reader.getInt("maxUsers")
+                         .addConstraint(i -> i > 0)
+                         .addConstraint(i -> i < 10_000)
                          .get();
+
+    DefaultSettings<MyObject> myObjectDefaultSettings =
+        new DefaultSettings<MyObject>()
+                     .when(DefaultConditions.IS_EMPTY)
+                       .thenReturn(new MyObject("", 0))
+                     .when(DefaultConditions.PARSE_FAILS)
+                       .thenDo((key, value) ->
+                                  System.out.println("Key, " + key + " could not be parsed from value: " + value))
+                       .thenReturn(new MyObject("", 0));
+    
+    MyObject myObject = reader.getCustom("myObject", text -> new MyObject(text, 12))
+                              .withDefaultSettings(myObjectDefaultSettings)
+                              .get();
+  } 
+
+}
 ```
 
-Multiple constraints can also be added, as follows:
-```
-Integer maxUsers = reader.getInt("maxUsers")
-                         .addConstraint(users -> users > 0)
-                         .addConstraint(users -> users < 10_000)
-                         .get();
-```
-
-If any of these constraints fail, we can either provide a default return value, or an exception will be thrown when calling the `Property::get` method.
-
-### Default Values and Exceptions
-There are three places where exceptions can be thrown while calling the `Property::get` method:
-The property you're trying to parse is empty or missing:
-
-| Case                                                      | Condition name                 | Exception                  |
-| --------------------------------------------------------- |:------------------------------:|:--------------------------:|
-| The property value is `null` or empty                     | `DefaultCondition.IS_EMPTY`    | `MissingPropertyException` |
-| The value cannot be converted to the required object type | `DefaultCondition.PARSE_FAILS` | `InvalidTypeException`     |
-| The value fails any of the constraints                    | `DefaultCondition.IS_INVALID`  | `ValidationException`      |
-
-You can catch any of these specific exceptions or the parent exception, `PropertiesException`, while processing.
-
-#### Default values
-However, it's usually better to assign some default behaviour when these conditions are met. These can be specified using the `DefaultSettings` object. For example, let's try and get the maximum number of users from the properties file - if this property is not specified, cannot be parsed to an `Integer`, or fails validation, let's set this to a reasonable average of 50.
-
-```
-DefaultSettings<Integer> maxUsersDefault =
-    new DefaultSettings<Integer>()
-          .when(DefaultConditions.values()) // Any DefaultCondition
-          .thenReturn(50);
-
-Integer maxUsers = reader.getInt("maxUsers")
-                         .withDefaultSettings(maxUsersDefault) // Add the default behaviour
-                         .addConstraint(users -> users > 0)
-                         .addConstraint(users -> users < 10_000)
-                         .get();
-```
-
-We can also add a task to complete if these conditions are met. This could be useful if to, for example, log the warnings to a `Logger`:
-```
-DefaultSettings<Integer> maxUsersDefault =
-  new DefaultSettings<Integer>()
-        .when(DefaultConditions.values()) // Any DefaultCondition
-          .thenDo((key, value) ->
-              LOGGER.warn("Key, " + key + ", is invalid: " + value))
-          .thenReturn(50);
-```
-
-Finally, we can express different behaviour and return values dependent on which condition is triggered:
-```
-DefaultSettings<Integer> maxUsersDefault =
-    new DefaultSettings<Integer>()
-          .when(DefaultConditions.IS_EMPTY)
-            .thenDo((key, value) ->
-                LOGGER.info("Key, " + key + ", has not been specified"))
-            .thenReturn(50)
-          .when(DefaultCondition.IS_INVALID)
-            .thenDo((key, value) ->
-                LOGGER.info("Key, " + key + ", is invalid: " + value))
-            .thenReturn(20)
-          .when(DefaultCondition.PARSE_FAILS)
-            .thenDo((key, value) ->
-                LOGGER.info("Key, " + key + ", cannot be parsed to an int: " + value))
-            .thenReturn(10);
-```
-
-When a `DefaultCondition` is encountered, the `Property` will search to see if it has any default settings that cover this scenario. If no settings are found, or the settings do not specify how that condition should be handled, the appropriate exception is thrown.
+For further information on extracting values without using annotations, consult the Javadoc.
