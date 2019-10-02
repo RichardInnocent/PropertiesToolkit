@@ -78,7 +78,7 @@ public class Property<T> {
    *     a {@code defaultSettings} object has been applied which contains the appropriate behaviour
    *     for {@link DefaultCondition#IS_EMPTY}. If a setting is found, process as specified in the
    *     setting. If no such setting is found, a {@link MissingPropertyException} is
-   *     thrown.</b></li>
+   *     thrown.</li>
    *   <li><b>Attempt to parse the property to the expected type</b><br>
    *     This parse is completed using the provided {@code Function<String, T>}.<br>
    *     <b>If the property is parsed successfully</b>, continue to step 3.<br>
