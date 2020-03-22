@@ -156,15 +156,6 @@ public class PropertiesBeanTest {
     assertEquals(STRING_VALUE, new Test().stringKey);
   }
 
-  @Test(expected = InvalidAnnotationException.class)
-  public void testUsingExtractorThatIsNotAPropertyExtractorThrowsException() {
-    class Test extends TestPropertiesBean {
-      @FromProperty(key = STRING_KEY, extractor = NotAnExtractor.class)
-      private String field;
-    }
-    new Test();
-  }
-
   @Test
   public void testPropertiesConstructorIsUsedAppropriately() {
     class Test extends PropertiesBean {
@@ -209,7 +200,7 @@ public class PropertiesBeanTest {
       @FromProperty(key = STRING_KEY, extractor = AlwaysNullExtractor.class)
       private int field;
     }
-    assertEquals((int) 0, new Test().field);
+    assertEquals(0, new Test().field);
     setUp();
   }
 
@@ -496,8 +487,6 @@ public class PropertiesBeanTest {
       return (Function<String, T>) FUNCTION;
     }
   }
-
-  public static class NotAnExtractor {}
 
   public static class AlwaysNullExtractor extends GenericExtractor {
 
